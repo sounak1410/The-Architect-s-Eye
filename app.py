@@ -1,6 +1,20 @@
 import streamlit as st
 import os
-from crewai import Agent, Task, Crew, Process
+from crewai import Agent, Task, Crew, Process, LLM
+# Define the local LLM configuration
+local_llm = LLM(
+    model="ollama/llama3.2-vision", # Ensure this model is pulled in Ollama
+    base_url="http://localhost:11434" # This is the crucial part!
+)
+
+# --- Define Agents ---
+watcher = Agent(
+    role='Watcher', 
+    goal='Analyze site photo and notes.', 
+    backstory='You are an expert site inspector.',
+    llm=local_llm, # Pass the object here
+    verbose=True
+)
 
 # Ensure an 'uploads' directory exists
 if not os.path.exists("uploads"):
@@ -25,20 +39,27 @@ if uploaded_file is not None:
 if st.button("Generate Compliance Report"):
     if site_notes or uploaded_file:
         with st.spinner("Analyzing site safety (Agents are working)..."):
-            # Logic: If image exists, pass file path to the Watcher agent
+            # 1. Prepare Context
             vision_context = f"Image Path: {file_path}" if uploaded_file else "No image provided."
             
-            # --- Define Agents ---
-            # NOTE: Use 'llama3.2-vision' for the watcher agent to process the image
-            watcher = Agent(role='Watcher', goal='Analyze site photo and notes.', backstory='...', llm="ollama/llama3.2-vision")
-            # ... (Define your other agents as before)
-
-            # --- Define Tasks ---
+            # 2. Define Tasks
             task1 = Task(description=f'Analyze site: {site_notes}. {vision_context}', expected_output='List of visual hazards.', agent=watcher)
             
-            # ... (Proceed with the rest of your CrewAI workflow)
+            # 3. Initialize your Crew
+            my_crew = Crew(
+                agents=[watcher], 
+                tasks=[task1], 
+                process=Process.sequential
+            )
+
+            # 4. RUN the crew
+            result = my_crew.kickoff()
+
+            # 5. DISPLAY the result
+            st.subheader("Final Safety Report")
+            st.markdown(result)
             
-            # (Show results as before...)
+            # ... (Rest of your download/save code)
             st.success("Analysis Complete!")
     else:
         st.warning("Please provide either text notes or a photo!")
