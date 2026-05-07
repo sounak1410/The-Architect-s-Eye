@@ -37,7 +37,7 @@ The Architect's Eye" is a multi-agent AI system designed to automate constructio
 
 6. Install dependencies:
     ```bash
-    pip install -r requirements.txt
+    pip install -r requirements_amd.txt
     ```
 
 7. Configure environment:
@@ -73,7 +73,7 @@ Deploy the Code:
 
 >Install requirements: 
     ```bash
-    pip install -r requirements.txt.
+    pip install -r requirements_amd.txt.
     ```
 
 >Start the server using the network-exposed address:

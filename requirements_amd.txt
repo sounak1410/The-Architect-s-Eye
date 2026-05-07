@@ -1,4 +1,6 @@
+crewai
 streamlit
+langchain-ollama
 pillow
 python-dotenv
 pydantic
