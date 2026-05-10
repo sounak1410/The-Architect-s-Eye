@@ -91,7 +91,5 @@ Deploy the Code:
 # 📝 Submission Notes
 >This project was built for lablab.ai AMD Developer Hackathon.
 
->The app uses strictly local LLM inference via Ollama for data privacy and speed.
-
 >No sensitive API keys are required beyond the local host configuration.
 
